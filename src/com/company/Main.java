@@ -13,13 +13,14 @@ public class Main {
         Random random = new Random();
 
         while (answer.equals("yes")) {
+
             int myNum = random.nextInt(100) + 1;
 
 //            for (int a = 0; a <= 1; a++) {
 
             System.out.println("I've thought of number from 1 to 100, try to guess it.");
 
-            System.out.println(myNum);
+//            System.out.println(myNum);
 
             for (int i = 1; i <= 10; i++) {
                 int userNum = scanner.nextInt();
