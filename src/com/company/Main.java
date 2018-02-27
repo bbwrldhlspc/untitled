@@ -80,7 +80,7 @@ public class Main {
             }
             System.out.println("Good bye, have a nice day!");
 
-
+//
         } catch (NoSuchElementException e) {
             System.out.println("Goodbye, you've pressed leave combintation");
 
