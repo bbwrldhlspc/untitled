@@ -8,6 +8,7 @@ public class Main {
     static Random random = new Random();
 
     public static void main(String[] args) {
+        long t = System.currentTimeMillis();
         ArrayList<GameResult> leaderboard = new ArrayList<>();
         try {
             String answer;
