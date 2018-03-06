@@ -1,70 +1,76 @@
 package com.company;
 
-import java.util.InputMismatchException;
-import java.util.NoSuchElementException;
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
 
     static Scanner scanner = new Scanner(System.in);
+    static Random random = new Random();
 
     public static void main(String[] args) {
+        ArrayList<GameResult> leaderboard = new ArrayList<>();
         try {
-            System.out.println("Do you want to play a game with me? yes/no");
-
-            String answer = askAnswer();
-            Random random = new Random();
-
-            while (answer.equals("yes")) {
-                int myNum = random.nextInt(100) + 1;
-
-                System.out.println("I've thought of number from 1 to 100, try to guess it.");
-                /*Cheat*/
-                System.out.println(myNum);
-
-                for (int i = 1; i <= 10; i++) {
-                    int userNum = askNumber();
-                    if (i <= 9) {
-                        if (myNum > userNum) {
-                            System.out.println("Your number is smaller then the one I've thought of.");
-                            System.out.println("Number of tries left: " + (10 - i));
-                        }
-
-                        if (myNum < userNum) {
-                            System.out.println("Your number is bigger then the one I've thought of.");
-                            System.out.println("Number of tries left: " + (10 - i));
-                        }
-
-                        if (myNum == userNum) {
-                            System.out.println("Congrats, you won!!!");
-                            System.out.println("---------------------");
-                            break;
-                        }
-                    }
-
-                    if (i == 10) {
-                        if (myNum == userNum) {
-                            System.out.println("Congrats, you won!!!");
-                            System.out.println("---------------------");
-                        }
-
-                        else {
-                            System.out.println("You lost...");
-                            break;
-                        }
-                    }
+            String answer;
+            do {
+                System.out.println("Hello.");
+                System.out.println("What is your name?");
+                String name = scanner.next();
+                GameResult r = DoGame(name);
+                if (r != null) {
+                    leaderboard.add(r);
                 }
+//                System.out.println("Do you want to play a game with me? yes/no");
 
                 System.out.println("Do you want to keep playing? yes/no");
                 answer = askAnswer();
+
+            } while (answer.equals("yes"));
+            System.out.println("Leader Board:");
+            for (GameResult r : leaderboard) {
+                System.out.println(r.userName + "\t" + r.attempts);
             }
             System.out.println("Good bye, have a nice day!");
-
         } catch (NoSuchElementException e) {
             System.out.println("Goodbye, you've pressed leave combination");
         }
     }
+
+    private static GameResult DoGame(String userName) {
+//        do {
+        int myNum = random.nextInt(100) + 1;
+
+        System.out.println("I've thought of number from 1 to 100, try to guess it.");
+
+        GameResult result = new GameResult();
+        result.userName = userName;
+
+        System.out.println("debug " +myNum);
+
+        for (int i = 1; i <= 10; i++) {
+            int userNum = askNumber();
+            if (i <= 9) {
+                if (myNum > userNum) {
+                    System.out.println("Your number is smaller then the one I've thought of.");
+                    System.out.println("Number of tries left: " + (10 - i));
+                } else if (myNum < userNum) {
+                    System.out.println("Your number is bigger then the one I've thought of.");
+                    System.out.println("Number of tries left: " + (10 - i));
+                } else {
+                    System.out.println("Congrats, you won!!!");
+                    result.attempts = i;
+                    return result;
+                }
+            }
+        }
+        System.out.println("You lost...");
+        return null;
+        //           answer = askAnswer();
+//        } while (answer.equals("yes"));
+    }
+
+//    static String askName(){
+//        String
+//    }
 
     static String askAnswer() {
         for (; ; ) {
@@ -87,6 +93,7 @@ public class Main {
                 if (num <= 100 && num >= 1) {
                     return num;
                 }
+                System.out.println("Please enter a number between 1 and 100.");
             } catch (InputMismatchException e) {
                 scanner.next();
                 System.out.println("oops. You must enter a number...");
