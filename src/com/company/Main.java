@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Stream;
 
 public class Main {
 
@@ -72,7 +74,18 @@ public class Main {
     }
 
     private static void printLeaderBoard(ArrayList<GameResult> leaderboard) {
-        for (GameResult r : leaderboard) {
+//        String fileName = "./leader-board.txt";
+//        try (Stream<String> stream = Files.lines(Paths.get(fileName))) {
+//            stream
+//                    .limit(5)
+//                    .forEach(System.out::println);
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+
+        for (int i = 0; i<=4; i++) {
+            GameResult r = leaderboard.get(i);
             System.out.println(r.userName + "\t" + r.attempts + "\t" + r.time / 1000.0);
         }
     }
