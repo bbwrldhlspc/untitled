@@ -1,15 +1,20 @@
 package com.company;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.file.Files;
 import java.util.*;
 
 public class Main {
 
     static Scanner scanner = new Scanner(System.in);
     static Random random = new Random();
+    static File leaderBoardFile = new File("leader-board.txt");
 
     public static void main(String[] args) {
-        long t = System.currentTimeMillis();
         ArrayList<GameResult> leaderboard = new ArrayList<>();
+        loadLeaderBoard(leaderboard);
         try {
             String answer;
             do {
@@ -20,24 +25,59 @@ public class Main {
                 if (r != null) {
                     leaderboard.add(r);
                 }
-//                System.out.println("Do you want to play a game with me? yes/no");
 
                 System.out.println("Do you want to keep playing? yes/no");
                 answer = askAnswer();
 
             } while (answer.equals("yes"));
+
             System.out.println("Leader Board:");
-            for (GameResult r : leaderboard) {
-                System.out.println(r.userName + "\t" + r.attempts);
-            }
+
+            leaderboard.sort(Comparator.comparingLong(g -> g.time + g.attempts));
+            printLeaderBoard(leaderboard);
+            saveLeaderBoard(leaderboard);
+
             System.out.println("Good bye, have a nice day!");
+
         } catch (NoSuchElementException e) {
             System.out.println("Goodbye, you've pressed leave combination");
         }
     }
 
+    private static void loadLeaderBoard(ArrayList<GameResult> leaderboard) {
+        if (!leaderBoardFile.exists()) {
+            return;
+        }
+        try (Scanner in = new Scanner(leaderBoardFile)) {
+            while (in.hasNext()) {
+                GameResult r = new GameResult();
+                r.userName = in.next();
+                r.attempts = in.nextInt();
+                r.time = in.nextLong();
+                leaderboard.add(r);
+            }
+        } catch (IOException e) {
+            System.out.println("Something wrong. Can't read file leader-board.txt");
+        }
+    }
+
+    private static void saveLeaderBoard(ArrayList<GameResult> leaderboard) {
+        try (PrintWriter out = new PrintWriter(leaderBoardFile)) {
+            for (GameResult r : leaderboard) {
+                out.printf("%s %d %d\n", r.userName, r.attempts, r.time);
+            }
+        } catch (IOException e) {
+            System.out.println("Something wrong. Can't write file leader-board.txt");
+        }
+    }
+
+    private static void printLeaderBoard(ArrayList<GameResult> leaderboard) {
+        for (GameResult r : leaderboard) {
+            System.out.println(r.userName + "\t" + r.attempts + "\t" + r.time / 1000.0);
+        }
+    }
+
     private static GameResult DoGame(String userName) {
-//        do {
         int myNum = random.nextInt(100) + 1;
 
         System.out.println("I've thought of number from 1 to 100, try to guess it.");
@@ -45,8 +85,8 @@ public class Main {
         GameResult result = new GameResult();
         result.userName = userName;
 
-        System.out.println("debug " +myNum);
-
+        System.out.println("debug " + myNum);
+        long t1 = System.currentTimeMillis();
         for (int i = 1; i <= 10; i++) {
             int userNum = askNumber();
             if (i <= 9) {
@@ -59,19 +99,15 @@ public class Main {
                 } else {
                     System.out.println("Congrats, you won!!!");
                     result.attempts = i;
+                    long t2 = System.currentTimeMillis();
+                    result.time = t2 - t1;
                     return result;
                 }
             }
         }
         System.out.println("You lost...");
         return null;
-        //           answer = askAnswer();
-//        } while (answer.equals("yes"));
     }
-
-//    static String askName(){
-//        String
-//    }
 
     static String askAnswer() {
         for (; ; ) {
